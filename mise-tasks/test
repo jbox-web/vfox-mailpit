@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force mailpit .
+mise cache clear
+mise install mailpit@1.29.4
+
+# Capture and display the output while also verifying it
+output=$(mise exec "mailpit@1.29.4" -- "mailpit" version)
+echo "mailpit output: ${output}"
+
+if echo "${output}" | grep -q '1.29.4'; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Test failed: expected version mailpit@1.29.4"
+  exit 1
+fi
